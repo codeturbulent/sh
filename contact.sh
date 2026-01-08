@@ -1,10 +1,14 @@
 #! /bin/sh
 
+addcontact(){
+    echo $@
+}
+
 ACTION=$1
 
 case "$ACTION" in 
     -h | help )
-    echo  "-h or -help    help (tells what all this script can do) "
+    echo  "-h or -help  help ( tells what all this script can do ) "
     ;;
 
     -a | add )
@@ -30,8 +34,8 @@ case "$ACTION" in
         read -p " What should be the NOTE of the contact ( ie : He is a Doctor ) :" NOTE
     fi
 
-
-    echo "ADDING $NAME $PHONE $EMAIL $NOTE"
+    echo "\e[32mADDING\e[0m $NAME $PHONE $EMAIL $NOTE"
+    addcontact $NAME $PHONE $EMAIL $NOTE
     ;;
     *)
     echo "-h or -help    help ( tells what all this script can do ) ";;
