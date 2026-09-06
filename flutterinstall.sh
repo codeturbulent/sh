@@ -74,17 +74,16 @@ check_internet
 
 # 2. INSTALL SYSTEM DEPENDENCIES
 log_info "Updating system and installing dependencies..."
-sudo apt-get update -qq
-# apt-get install might fail if locks are held, usually good to wait or retry, 
+# apt-get install might fail if locks are held, usually good to wait or retry,
 # but for simplicity we assume sudo access works.
-sudo apt-get install -y -qq curl git unzip xz-utils zip libglu1-mesa openjdk-17-jdk ninja-build || log_error "Failed to install system dependencies."
+sudo pacman -Sy --noconfirm --needed curl git unzip xz zip glu jdk17-openjdk ninja || log_error "Failed to install system dependencies."
 
-# Verify Java 17 Installation
-JAVA_PATH="/usr/lib/jvm/java-17-openjdk-amd64"
-if [ ! -d "$JAVA_PATH" ]; then
-    log_error "Java 17 directory not found at $JAVA_PATH. Installation might have failed."
+# Verify Java 17 Installation (Arch installs under /usr/lib/jvm/java-17-openjdk, no arch suffix)
+JAVA_PATH=$(find /usr/lib/jvm -maxdepth 1 -iname 'java-17-openjdk*' -print -quit)
+if [ -z "$JAVA_PATH" ] || [ ! -d "$JAVA_PATH" ]; then
+    log_error "Java 17 directory not found under /usr/lib/jvm. Installation might have failed."
 fi
-log_success "Java 17 installed."
+log_success "Java 17 installed at $JAVA_PATH."
 
 # 3. SETUP DIRECTORY VARIABLES
 HOME_DIR="$HOME"
@@ -131,18 +130,20 @@ export JAVA_HOME="$JAVA_PATH"
 export ANDROID_HOME="$ANDROID_ROOT"
 export PATH="$FLUTTER_ROOT/bin:$PATH:$ANDROID_ROOT/cmdline-tools/latest/bin:$ANDROID_ROOT/platform-tools"
 
-# Update .bashrc idempotently (removes old lines, adds new ones)
-sed -i '/# -- FLUTTER SETUP START --/,/# -- FLUTTER SETUP END --/d' "$HOME_DIR/.bashrc"
+# Update shell rc files idempotently (removes old lines, adds new ones)
+for RC_FILE in "$HOME_DIR/.bashrc" "$HOME_DIR/.zshrc"; do
+    [ -f "$RC_FILE" ] || continue
+    sed -i '/# -- FLUTTER SETUP START --/,/# -- FLUTTER SETUP END --/d' "$RC_FILE"
 
-cat <<EOT >> "$HOME_DIR/.bashrc"
+    cat <<EOT >> "$RC_FILE"
 # -- FLUTTER SETUP START --
 export JAVA_HOME="$JAVA_PATH"
 export ANDROID_HOME="$ANDROID_ROOT"
 export PATH="\$PATH:$FLUTTER_ROOT/bin:$ANDROID_ROOT/cmdline-tools/latest/bin:$ANDROID_ROOT/platform-tools"
 # -- FLUTTER SETUP END --
 EOT
-
-log_success "Environment variables updated in .bashrc"
+    log_success "Environment variables updated in $RC_FILE"
+done
 
 # 7. INSTALL ANDROID SDK PLATFORMS & TOOLS
 log_info "Installing Android SDK components (Licenses will be accepted automatically)..."
@@ -191,5 +192,5 @@ flutter doctor -v
 echo "=================================================="
 log_success "SETUP COMPLETE!"
 echo -e "${YELLOW}IMPORTANT:${NC} Run this command to refresh your current terminal:"
-echo -e "    ${GREEN}source ~/.bashrc${NC}"
+echo -e "    ${GREEN}source ~/.zshrc${NC}  (or ~/.bashrc if using bash)"
 echo "=================================================="
