@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>codeturbulent / sh — Shell Scripts & Automation Utilities</title>
+  <meta name="description" content="A curated collection of shell scripts, environment setups, and developer automation utilities hosted at codeturbulent/sh.">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --heading: #f0f6fc;
+      --accent: #58a6ff;
+      --accent-hover: #79c0ff;
+      --code-bg: #0a0d12;
+      --code-border: #21262d;
+      --badge-bg: #21262d;
+      --badge-text: #8b949e;
+      --tag-linux: #238636;
+      --tag-mac: #8957e5;
+      --tag-arch: #1f6feb;
+      --tag-cross: #d29922;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f6f8fa;
+        --card-bg: #ffffff;
+        --border: #d0d7de;
+        --text: #24292f;
+        --heading: #1f2328;
+        --accent: #0969da;
+        --accent-hover: #0550ae;
+        --code-bg: #f6f8fa;
+        --code-border: #d0d7de;
+        --badge-bg: #eaeef2;
+        --badge-text: #57606a;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .header-badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      color: var(--heading);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    p.lead {
+      font-size: 1.15rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .base-url-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    .base-url-card p {
+      font-weight: 600;
+      color: var(--heading);
+      margin-bottom: 0.5rem;
+    }
+
+    .base-url-code {
+      display: block;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      padding: 0.75rem 1rem;
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 0.95rem;
+      overflow-x: auto;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--heading);
+      margin: 2.5rem 0 1rem 0;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      color: var(--heading);
+      margin: 1.75rem 0 0.5rem 0;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: var(--accent-hover);
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--code-border);
+      border-radius: 6px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.9rem;
+      margin: 0.75rem 0 1.25rem 0;
+      line-height: 1.45;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.88em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+      border: 1px solid var(--code-border);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      border: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 2rem 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--card-bg);
+      color: var(--heading);
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: var(--card-bg);
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 12px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .tag-linux { background-color: var(--tag-linux); }
+    .tag-mac { background-color: var(--tag-mac); }
+    .tag-arch { background-color: var(--tag-arch); }
+    .tag-cross { background-color: var(--tag-cross); }
+
+    .script-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .script-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .script-header h3 {
+      margin: 0;
+    }
+
+    ul {
+      margin: 0.5rem 0 1rem 1.5rem;
+    }
+
+    li {
+      margin-bottom: 0.35rem;
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--card-bg);
+      padding: 0.75rem 1rem;
+      border-radius: 0 6px 6px 0;
+      margin: 1.25rem 0;
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--badge-text);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <span class="header-badge">GitHub Pages &middot; Direct Access</span>
+      <h1>⚡ codeturbulent / sh</h1>
+      <p class="lead">
+        A curated collection of shell scripts, environment setups, and developer automation utilities hosted at
+        <a href="https://github.com/codeturbulent/sh" target="_blank" rel="noopener noreferrer">github.com/codeturbulent/sh</a>.
+      </p>
+
+      <div class="base-url-card">
+        <p>Direct HTTP Access Pattern</p>
+        <div class="base-url-code">https://codeturbulent.github.io/sh/&lt;script-name&gt;.sh</div>
+      </div>
+    </header>
+
+    <main>
+      <section id="quick-execution">
+        <h2>🚀 Quick Execution Guide</h2>
+        <p>Run or download any script directly from the web without cloning the repository.</p>
+
+        <h3>Option 1: Direct Execution via <code>curl</code></h3>
+        <p>Run directly inside your terminal with process substitution or piped to bash:</p>
+        <pre><code># Process substitution (preserves stdin)
+bash &lt;(curl -fsSL https://codeturbulent.github.io/sh/pushextension.sh) &lt;appname&gt; "&lt;commit_message&gt;" &lt;version&gt;
+
+# Pipe into bash with arguments
+curl -fsSL https://codeturbulent.github.io/sh/pushextension.sh | bash -s -- &lt;appname&gt; "&lt;commit_message&gt;" &lt;version&gt;</code></pre>
+
+        <h3>Option 2: Download and Make Executable</h3>
+        <p>Save locally or place in your <code>$PATH</code>:</p>
+        <pre><code># Download
+curl -fsSL https://codeturbulent.github.io/sh/pushextension.sh -o pushextension.sh
+
+# Make executable
+chmod +x pushextension.sh
+
+# Run
+./pushextension.sh &lt;appname&gt; "&lt;commit_message&gt;" &lt;version&gt;</code></pre>
+      </section>
+
+      <section id="catalog">
+        <h2>📦 Scripts Catalog</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Script</th>
+              <th>Platform / Target</th>
+              <th>Description</th>
+              <th>Direct URL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="#pushextension"><code>pushextension.sh</code></a></td>
+              <td><span class="tag tag-cross">Cross-platform</span></td>
+              <td>Git commit, release zip packaging, and push automation</td>
+              <td><a href="https://codeturbulent.github.io/sh/pushextension.sh">URL</a></td>
+            </tr>
+            <tr>
+              <td><a href="#flutterinstall"><code>flutterinstall.sh</code></a></td>
+              <td><span class="tag tag-linux">Linux / Codespaces</span></td>
+              <td>Automated Flutter &amp; Android SDK installation</td>
+              <td><a href="https://codeturbulent.github.io/sh/flutterinstall.sh">URL</a></td>
+            </tr>
+            <tr>
+              <td><a href="#flutterinstallarch"><code>flutterinstallarch.sh</code></a></td>
+              <td><span class="tag tag-arch">Arch Linux</span></td>
+              <td>Flutter &amp; Android SDK setup via <code>pacman</code> and <code>yay</code></td>
+              <td><a href="https://codeturbulent.github.io/sh/flutterinstallarch.sh">URL</a></td>
+            </tr>
+            <tr>
+              <td><a href="#fluttermac"><code>fluttermac.sh</code></a></td>
+              <td><span class="tag tag-mac">macOS</span></td>
+              <td>Flutter (iOS &amp; Android) setup via Homebrew &amp; Xcode tools</td>
+              <td><a href="https://codeturbulent.github.io/sh/fluttermac.sh">URL</a></td>
+            </tr>
+            <tr>
+              <td><a href="#scrcpymac"><code>scrcpymac.sh</code></a></td>
+              <td><span class="tag tag-mac">macOS (Non-Admin)</span></td>
+              <td>Local Scrcpy &amp; ADB setup without requiring <code>sudo</code></td>
+              <td><a href="https://codeturbulent.github.io/sh/scrcpymac.sh">URL</a></td>
+            </tr>
+            <tr>
+              <td><a href="#assignsubs"><code>assignsubs.sh</code></a></td>
+              <td><span class="tag tag-cross">Cross-platform</span></td>
+              <td>Cloud function user plan assignment API helper</td>
+              <td><a href="https://codeturbulent.github.io/sh/assignsubs.sh">URL</a></td>
+            </tr>
+            <tr>
+              <td><a href="#syncwebsite"><code>syncwebsite.sh</code></a></td>
+              <td><span class="tag tag-cross">Cross-platform</span></td>
+              <td>Argument iteration and synchronizer utility</td>
+              <td><a href="https://codeturbulent.github.io/sh/syncwebsite.sh">URL</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="details">
+        <h2>🛠️ Script Documentation</h2>
+
+        <!-- pushextension.sh -->
+        <div class="script-section" id="pushextension">
+          <div class="script-header">
+            <h3>pushextension.sh</h3>
+            <span class="tag tag-cross">Cross-platform</span>
+          </div>
+          <p>Automates git staging, creates a standardized commit, bundles a release <code>.zip</code> file (excluding git files and previous releases), and pushes upstream.</p>
+          <pre><code>bash &lt;(curl -fsSL https://codeturbulent.github.io/sh/pushextension.sh) myextension "feat: add dark mode" 1.0.4</code></pre>
+          <p><strong>Parameters:</strong></p>
+          <ul>
+            <li><code>$1</code>: Application or extension name (e.g. <code>myextension</code>)</li>
+            <li><code>$2</code>: Commit description (e.g. <code>feat: add dark mode</code>)</li>
+            <li><code>$3</code>: Version tag (e.g. <code>1.0.4</code>)</li>
+          </ul>
+          <p>Produces packaged archive at: <code>release/&lt;appname&gt;_&lt;version&gt;.zip</code>.</p>
+        </div>
+
+        <!-- flutterinstall.sh -->
+        <div class="script-section" id="flutterinstall">
+          <div class="script-header">
+            <h3>flutterinstall.sh</h3>
+            <span class="tag tag-linux">Linux / Codespaces / Ubuntu</span>
+          </div>
+          <p>One-click setup for Flutter and Android SDK on Linux distributions (Ubuntu, Debian, Cloud VMs, GitHub Codespaces).</p>
+          <ul>
+            <li>Installs OpenJDK 17 and required build packages</li>
+            <li>Clones and configures Flutter stable channel</li>
+            <li>Downloads Android Commandline Tools and Platform Tools</li>
+            <li>Accepts Android licenses automatically</li>
+            <li>Applies low-RAM Gradle memory optimizations</li>
+            <li>Configures environment variables in <code>~/.bashrc</code> and <code>~/.zshrc</code></li>
+          </ul>
+          <pre><code>bash &lt;(curl -fsSL https://codeturbulent.github.io/sh/flutterinstall.sh)</code></pre>
+        </div>
+
+        <!-- flutterinstallarch.sh -->
+        <div class="script-section" id="flutterinstallarch">
+          <div class="script-header">
+            <h3>flutterinstallarch.sh</h3>
+            <span class="tag tag-arch">Arch Linux</span>
+          </div>
+          <p>Tailored installer for Arch Linux using native pacman packages and optional <code>yay</code> AUR helper.</p>
+          <pre><code>bash &lt;(curl -fsSL https://codeturbulent.github.io/sh/flutterinstallarch.sh)</code></pre>
+        </div>
+
+        <!-- fluttermac.sh -->
+        <div class="script-section" id="fluttermac">
+          <div class="script-header">
+            <h3>fluttermac.sh</h3>
+            <span class="tag tag-mac">macOS</span>
+          </div>
+          <p>Configures a complete macOS Flutter development environment targeting both iOS and Android.</p>
+          <ul>
+            <li>Installs Homebrew if missing</li>
+            <li>Installs Flutter cask, Android Studio, and platform-tools</li>
+            <li>Installs Xcode Command Line Tools and CocoaPods</li>
+            <li>Accepts Android and Xcode licenses</li>
+          </ul>
+          <pre><code>bash &lt;(curl -fsSL https://codeturbulent.github.io/sh/fluttermac.sh)</code></pre>
+        </div>
+
+        <!-- scrcpymac.sh -->
+        <div class="script-section" id="scrcpymac">
+          <div class="script-header">
+            <h3>scrcpymac.sh</h3>
+            <span class="tag tag-mac">macOS (Non-Admin)</span>
+          </div>
+          <p>Installs Scrcpy and Android Platform Tools (ADB) for non-admin macOS users without requiring root/sudo privileges by bootstrapping a local user Homebrew tree in <code>~/homebrew</code>.</p>
+          <pre><code>bash &lt;(curl -fsSL https://codeturbulent.github.io/sh/scrcpymac.sh)</code></pre>
+        </div>
+
+        <!-- assignsubs.sh -->
+        <div class="script-section" id="assignsubs">
+          <div class="script-header">
+            <h3>assignsubs.sh</h3>
+            <span class="tag tag-cross">Cross-platform</span>
+          </div>
+          <p>Sends an authenticated request to a Cloud Function endpoint to assign user subscription plans.</p>
+          <pre><code>bash &lt;(curl -fsSL https://codeturbulent.github.io/sh/assignsubs.sh)</code></pre>
+        </div>
+
+        <!-- syncwebsite.sh -->
+        <div class="script-section" id="syncwebsite">
+          <div class="script-header">
+            <h3>syncwebsite.sh</h3>
+            <span class="tag tag-cross">Cross-platform</span>
+          </div>
+          <p>Utility script for iterating through command line parameters.</p>
+          <pre><code>bash &lt;(curl -fsSL https://codeturbulent.github.io/sh/syncwebsite.sh) arg1 arg2</code></pre>
+        </div>
+      </section>
+
+      <section id="security">
+        <div class="callout">
+          <strong>🔒 Security Best Practice:</strong> When executing remote scripts directly in a shell, always inspect the source code first:
+          <pre style="margin-top: 0.5rem;"><code>curl -fsSL https://codeturbulent.github.io/sh/&lt;script-name&gt;.sh | less</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>&copy; codeturbulent &middot; Released under the MIT License</span>
+      <span><a href="https://github.com/codeturbulent/sh" target="_blank" rel="noopener noreferrer">View on GitHub</a></span>
+    </footer>
+  </div>
+
+</body>
+</html>
