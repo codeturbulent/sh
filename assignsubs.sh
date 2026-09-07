@@ -1,5 +1,5 @@
 curl --location 'https://us-central1-jiva-flutter.cloudfunctions.net/assignUserPlan' \
---header 'x-api-key: 2MBLAmSaped3YESuHdcIFIjn4VxpPkgY' \
+--header 'x-api-key: <Apikey>' \
 --header 'Content-Type: application/json' \
 --data-raw '{
 "emails": [
